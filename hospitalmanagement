@@ -1,0 +1,146 @@
+#include <stdio.h> 
+#include <string.h> 
+  
+// Constants 
+#define MAX_PATIENTS 100 
+  
+// Structure Definition typedef struct { 
+    int id; 
+    char name[50];     
+    int age;     
+    char gender[10];     
+    char ailment[100];     
+    char doctor[50]; 
+    int admitted; // 1 if admitted, 0 if discharged     float bill; 
+} 
+Patient; 
+  
+// Global Variables 
+Patient patients[MAX_PATIENTS]; 
+int patientCount = 0; 
+  
+// Function Prototypes void admitPatient(); void updatePatientDetails(); void dischargePatient(); void displayPatientsByDoctor(); 
+void displayPatientBill(); 
+  
+int main() { 
+    int choice;     do { 
+        printf("\n--- Hospital Management System ---\n"); 
+        printf("1. Admit patient\n");         
+        printf("2. Update details of patient\n");         
+        printf("3. Discharge patient\n"); 
+        printf("4. Display patients under supervision of doctor\n"); 
+        printf("5. Display Bill of patient\n"); 
+        printf("6. Exit\n");         printf("Enter your choice: "); 
+        scanf("%d", &choice); 
+  
+        switch (choice) {             
+          case 1:admitPatient(); 
+                break;             
+          case 2:updatePatientDetails(); 
+                break;             
+          case 3:dischargePatient();                 
+                break;             
+          case 4:displayPatientsByDoctor(); 
+                break;             
+          case 5:displayPatientBill(); 
+                break;             
+          case 6:printf("Exiting system. Goodbye!\n");                 
+                break;             
+          default: printf("Invalid choice. Please try again.\n"); 
+        } 
+    } while (choice != 6); 
+  
+    return 0; 
+} 
+  
+// Function Definitions void admitPatient() { 
+    if (patientCount >= MAX_PATIENTS) {         
+        printf("Hospital is full. Cannot admit more patients.\n"); 
+        return; 
+    } 
+  
+    Patient p; 
+    p.id = patientCount + 1;     
+    printf("Enter name: ");     
+    scanf(" %[^\n]s", p.name);
+    printf("Enter age: ");     
+    scanf("%d", &p.age);     
+    printf("Enter gender: ");     
+    scanf(" %[^\n]s", p.gender);     
+    printf("Enter ailment: ");     
+    scanf(" %[^\n]s", p.ailment);     
+    printf("Enter doctor in charge: ");     
+    scanf(" %[^\n]s", p.doctor);     
+    p.admitted = 1; 
+    p.bill = 0.0; 
+  
+    patients[patientCount++] = p; 
+    printf("Patient admitted successfully with ID %d.\n", p.id); 
+} 
+  
+void updatePatientDetails() { 
+    int id; 
+    printf("Enter patient ID to update: ");     
+    scanf("%d", &id); 
+  
+    if (id < 1 || id > patientCount || !patients[id - 1].admitted) {         
+      printf("Invalid patient ID or patient is already discharged.\n"); 
+        return; 
+    } 
+  
+    printf("Enter updated ailment: ");     
+    scanf(" %[^\n]s", patients[id - 1].ailment);     
+    printf("Enter updated doctor in charge: ");     
+    scanf(" %[^\n]s", patients[id - 1].doctor);     
+    printf("Enter updated bill amount: "); 
+    scanf("%f", &patients[id - 1].bill); 
+  
+    printf("Patient details updated successfully.\n"); 
+} 
+  
+void dischargePatient() { 
+    int id; 
+    printf("Enter patient ID to discharge: ");     scanf("%d", &id); 
+  
+    if (id < 1 || id > patientCount || !patients[id - 1].admitted) {         
+        printf("Invalid patient ID or patient is already discharged.\n"); 
+        return; 
+    } 
+  
+    patients[id - 1].admitted = 0; 
+    printf("Patient with ID %d discharged successfully.\n", id); 
+} 
+  
+void displayPatientsByDoctor() { 
+    char doctor[50]; 
+    int found = 0; 
+  
+    printf("Enter doctor's name: "); 
+    scanf(" %[^\n]s", doctor); 
+  
+    printf("\nPatients under Dr. %s:\n", doctor); 
+    for (int i = 0; i < patientCount; i++) { 
+        if (patients[i].admitted && strcmp(patients[i].doctor, doctor) == 0) { 
+            printf("ID: %d, Name: %s, Age: %d, Gender: %s, Ailment: %s\n", 
+                   patients[i].id, patients[i].name, patients[i].age, 
+                   patients[i].gender, patients[i].ailment);             
+            found = 1; 
+        } 
+    } 
+  
+    if (!found) { 
+        printf("No patients found under Dr. %s.\n", doctor); 
+    } 
+} 
+  
+void displayPatientBill() { 
+    int id; 
+    printf("Enter patient ID to display bill: ");     scanf("%d", &id); 
+  
+    if (id < 1 || id > patientCount) { 
+        printf("Invalid patient ID.\n");         return; 
+    } 
+  
+    printf("Patient ID: %d, Name: %s, Total Bill: %.2f\n",            
+    patients[id - 1].id, patients[id - 1].name, patients[id - 1].bill); 
+}  
